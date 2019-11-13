@@ -1,13 +1,13 @@
 # flutter_group_chat
 
-This application follow bloc Architure
+This application follow bloc architecture
 
 ![bloc](https://user-images.githubusercontent.com/10207753/68789550-81f5f700-0667-11ea-8321-7a6c77404187.png)
 
 
 https://pub.dev/packages/flutter_bloc
 
-# Overview 
+# Preview
 
 
 
