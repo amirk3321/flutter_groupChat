@@ -1,6 +1,22 @@
 # flutter_group_chat
 
-A new Flutter application.
+This application follow bloc Architure
+
+![bloc](https://user-images.githubusercontent.com/10207753/68789550-81f5f700-0667-11ea-8321-7a6c77404187.png)
+
+
+https://pub.dev/packages/flutter_bloc
+
+# Overview 
+
+![Screenshot_2019-11-13-19-53-29-119_com c4coding flutter_group_chat](https://user-images.githubusercontent.com/10207753/68789684-c1244800-0667-11ea-8b7a-47c57caf892a.png)
+
+![Screenshot_2019-11-13-19-53-26-116_com c4coding flutter_group_chat](https://user-images.githubusercontent.com/10207753/68789785-ee70f600-0667-11ea-8b19-aea26cd1b57e.png)
+
+![Screenshot_2019-11-13-22-36-31-738_com c4coding flutter_group_chat](https://user-images.githubusercontent.com/10207753/68789826-00529900-0668-11ea-9d3e-0b7b7ad1e459.png)
+
+
+
 
 ## Getting Started
 
