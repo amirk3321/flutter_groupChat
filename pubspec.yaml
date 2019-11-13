@@ -26,6 +26,9 @@ dependencies:
   flutter_bloc: ^2.0.0
   equatable: ^0.6.1
 
+  #dateFormat
+  intl: ^0.16.0
+
   #firebase
   cloud_firestore: ^0.12.10
   firebase_auth: ^0.14.0+8

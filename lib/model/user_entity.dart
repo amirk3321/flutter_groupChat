@@ -7,10 +7,11 @@ class UserEntity{
   final String email;
   final String profileUrl;
   final bool isOnline;
+  final String uid;
 
 
   UserEntity(this.accessToken, this.name, this.email, this.profileUrl,
-      this.isOnline);
+      this.isOnline,this.uid);
 
 
   UserEntity fromJson(Map<String,dynamic> json){
@@ -20,6 +21,7 @@ class UserEntity{
       json['email'] as String,
       json['profileUrl'] as String,
       json['isOnline'] as bool,
+      json['uid'] as String,
     );
   }
   Map<String,dynamic> toMap() => {
@@ -31,13 +33,14 @@ class UserEntity{
   };
 
 
-  UserEntity fromSnapshot(DocumentSnapshot snapshot){
+  static UserEntity fromSnapshot(DocumentSnapshot snapshot){
     return UserEntity(
       snapshot.data['accessToken'],
       snapshot.data['name'],
       snapshot.data['email'],
       snapshot.data['profileUrl'],
       snapshot.data['isOnline'],
+      snapshot.data['uid'],
     );
   }
 
@@ -47,5 +50,6 @@ class UserEntity{
     "email" :email,
     "profileUrl" :profileUrl,
     "isOnline" :isOnline,
+    "uid" :uid,
   };
 }

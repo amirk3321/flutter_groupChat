@@ -10,6 +10,7 @@ class User extends Equatable{
   final String email;
   final String profileUrl;
   final bool isOnline;
+  final String uid;
 
   const User({
     this.accessToken='',
@@ -17,18 +18,15 @@ class User extends Equatable{
     this.email='',
     this.profileUrl='',
     this.isOnline=false,
+    this.uid='',
   });
 
   @override
-  List<Object> get props => [accessToken,name,email,profileUrl,isOnline];
+  List<Object> get props => [accessToken,name,email,profileUrl,isOnline,uid];
 
-  @override
-  String toString() {
-    return 'User{accessToken: $accessToken, name: $name, email: $email, profileUrl: $profileUrl, isOnline: $isOnline}';
-  }
 
   UserEntity toEntity() =>
-      UserEntity(accessToken,name,email,profileUrl,isOnline);
+      UserEntity(accessToken,name,email,profileUrl,isOnline,uid);
 
   User fromEntity(UserEntity entity){
     return User(
@@ -37,6 +35,7 @@ class User extends Equatable{
       email: entity.email,
       profileUrl: entity.profileUrl,
       isOnline: entity.isOnline,
+      uid: entity.uid,
     );
   }
 }

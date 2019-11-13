@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_group_chat/screen/home_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_group_chat/bloc/auth/auth_bloc.dart';
+import 'package:flutter_group_chat/bloc/auth/auth_event.dart';
+import 'package:flutter_group_chat/bloc/login/bloc.dart';
 import 'package:flutter_group_chat/screen/style/indecator_tab.dart';
 import 'package:flutter_group_chat/screen/style/theme.dart' as theme;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key key}) : super(key: key);
@@ -16,7 +17,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
-
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   final FocusNode myFocusNodeEmailLogin = FocusNode();
@@ -36,89 +36,166 @@ class _LoginScreenState extends State<LoginScreen>
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _nameController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
-  TextEditingController _confirmPasswordController = new TextEditingController();
+  TextEditingController _confirmPasswordController =
+      new TextEditingController();
 
+  bool get isPapulate =>
+      _emailController.text.isNotEmpty &&
+      _nameController.text.isNotEmpty &&
+      _passwordController.text.isNotEmpty &&
+      _confirmPasswordController.text.isNotEmpty &&
+      _passwordController.text.length > 5 &&
+      _passwordController.text.length < 8;
+
+  bool get isPapulateLogin =>
+      _loginPasswordController.text.isNotEmpty &&
+      _loginEmailController.text.isNotEmpty;
   PageController _pageController;
 
   Color left = Colors.black;
   Color right = Colors.white;
 
   @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      _emailController.addListener(() {
+        setState(() {});
+      });
+      _nameController.addListener(() {
+        setState(() {});
+      });
+      _passwordController.addListener(() {
+        setState(() {});
+      });
+      _confirmPasswordController.addListener(() {
+        setState(() {});
+      });
+      _loginEmailController.addListener(() {
+        setState(() {});
+      });
+      _loginPasswordController.addListener(() {
+        setState(() {});
+      });
+    }
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
+    _pageController = PageController();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       key: _scaffoldKey,
       body: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overscroll) {
           overscroll.disallowGlow();
         },
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height >= 775.0
-                ? MediaQuery.of(context).size.height
-                : 775.0,
-            decoration: new BoxDecoration(
-              gradient: new LinearGradient(
-                  colors: [
-                    theme.ThemeColors.loginGradientStart,
-                    theme.ThemeColors.loginGradientEnd,
+        child:   BlocListener<LoginBloc,LoginState>(
+          listener: (context,state){
+            if (state is LoadingState){
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Loading"),
+                    CircularProgressIndicator(),
                   ],
-                  begin: const FractionalOffset(0.0, 0.0),
-                  end: const FractionalOffset(1.0, 1.0),
-                  stops: [0.0, 1.0],
-                  tileMode: TileMode.clamp),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(top: 75.0),
-                  child: new Image(
-                      width: 250.0,
-                      height: 191.0,
-                      fit: BoxFit.fill,
-                      image: new AssetImage('assets/group.png')),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 20.0),
-                  child: _buildMenuBar(context),
+              ));
+            }
+            if (state is SuccessState){
+              BlocProvider.of<AuthBloc>(context)..add(LoggedInEvent());
+            }
+            if (state is FailureState){
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Error Occur"),
+                    Icon(Icons.error_outline)
+                  ],
                 ),
-                Expanded(
-                  flex: 2,
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: (int index) {
-                      if (index == 0) {
-                        setState(() {
-                          right = Colors.white;
-                          left = Colors.black;
-                        });
-                      } else if (index == 1) {
-                        setState(() {
-                          right = Colors.black;
-                          left = Colors.white;
-                        });
-                      }
-                    },
-                    children: <Widget>[
-                      new ConstrainedBox(
-                        constraints: const BoxConstraints.expand(),
-                        child: _buildSignIn(context),
-                      ),
-                      new ConstrainedBox(
-                        constraints: const BoxConstraints.expand(),
-                        child: _buildSignUp(context),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ));
+            }
+          },
+          child: _buildSingleChildScrollView(context),
         ),
       ),
     );
   }
+
+  SingleChildScrollView _buildSingleChildScrollView(BuildContext context) {
+    return SingleChildScrollView(
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height >= 775.0
+              ? MediaQuery.of(context).size.height
+              : 775.0,
+          decoration: new BoxDecoration(
+            gradient: new LinearGradient(
+                colors: [
+                  theme.ThemeColors.loginGradientStart,
+                  theme.ThemeColors.loginGradientEnd,
+                ],
+                begin: const FractionalOffset(0.0, 0.0),
+                end: const FractionalOffset(1.0, 1.0),
+                stops: [0.0, 1.0],
+                tileMode: TileMode.clamp),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top: 75.0),
+                child: new Image(
+                    width: 250.0,
+                    height: 191.0,
+                    fit: BoxFit.fill,
+                    image: new AssetImage('assets/group.png')),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 20.0),
+                child: _buildMenuBar(context),
+              ),
+              Expanded(
+                flex: 2,
+                child: PageView(
+                  controller: _pageController,
+                  onPageChanged: (int index) {
+                    if (index == 0) {
+                      setState(() {
+                        right = Colors.white;
+                        left = Colors.black;
+                      });
+                    } else if (index == 1) {
+                      setState(() {
+                        right = Colors.black;
+                        left = Colors.white;
+                      });
+                    }
+                  },
+                  children: <Widget>[
+                    new ConstrainedBox(
+                      constraints: const BoxConstraints.expand(),
+                      child: _buildSignIn(context),
+                    ),
+                    new ConstrainedBox(
+                      constraints: const BoxConstraints.expand(),
+                      child: _buildSignUp(context),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+  }
+
 
   @override
   void dispose() {
@@ -133,18 +210,6 @@ class _LoginScreenState extends State<LoginScreen>
     _loginEmailController.dispose();
     _loginPasswordController.dispose();
     super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-
-    _pageController = PageController();
   }
 
   void showInSnackBar(String value) {
@@ -335,18 +400,19 @@ class _LoginScreenState extends State<LoginScreen>
                       child: Text(
                         "LOGIN",
                         style: TextStyle(
-                            color: Colors.white,
+                            color: !isPapulateLogin
+                                ? Colors.black26
+                                : Colors.white,
                             fontSize: 25.0,
                             fontFamily: "WorkSansBold"),
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (_) => HomePage(),
+                    onPressed: !isPapulateLogin ? null : () {
+                      BlocProvider.of<LoginBloc>(context)..add(SubmittedLoginFromEvent(
+                        email: _loginEmailController.text,
+                        password: _loginPasswordController.text,
                       ));
-                      showInSnackBar("Login button pressed");
-                    }
-                ),
+                    }),
               ),
             ],
           ),
@@ -633,22 +699,30 @@ class _LoginScreenState extends State<LoginScreen>
                       tileMode: TileMode.clamp),
                 ),
                 child: MaterialButton(
-                    highlightColor: Colors.transparent,
-                    splashColor: theme.ThemeColors.loginGradientEnd,
-                    //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 42.0),
-                      child: Text(
-                        "SIGN UP",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25.0,
-                            fontFamily: "WorkSansBold"),
-                      ),
+                  highlightColor: Colors.transparent,
+                  splashColor: theme.ThemeColors.loginGradientEnd,
+                  //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 42.0),
+                    child: Text(
+                      "SIGN UP",
+                      style: TextStyle(
+                          color: !isPapulate ? Colors.black26 : Colors.white,
+                          fontSize: 25.0,
+                          fontFamily: "WorkSansBold"),
                     ),
-                    onPressed: () =>
-                        showInSnackBar("SignUp button pressed")),
+                  ),
+                  onPressed: !isPapulate
+                      ? null
+                      : () {
+                         BlocProvider.of<LoginBloc>(context)..add(SubmittedRegistrationFromEvent(
+                           name: _nameController.text,
+                           email: _emailController.text,
+                           password: _passwordController.text,
+                         ));
+                        },
+                ),
               ),
             ],
           ),
