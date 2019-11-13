@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_group_chat/app_constent.dart';
 import 'package:flutter_group_chat/model/text_message_entity.dart';
 
 class TextMessage extends Equatable{
@@ -15,7 +16,7 @@ class TextMessage extends Equatable{
       {this.recipientId = '',
       this.senderId = '',
       this.senderName = '',
-      this.type = "TEXT",
+      this.type = AppConst.text,
       this.time,
       this.content='',
       this.receiverName=''});

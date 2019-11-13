@@ -64,7 +64,11 @@ class myAppState extends State<myApp> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text("Loading..."),
+                          Text("Loading...",style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25,
+                          ),),
+                          SizedBox(height: 5,),
                           CircularProgressIndicator(),
                         ],
                       ),

@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_group_chat/model/text_message.dart';
 import 'package:flutter_group_chat/model/text_message_entity.dart';
 import 'package:flutter_group_chat/model/user.dart';
@@ -21,6 +24,9 @@ class FireRepository extends RapoBase {
   //channelID all user communicate with each other through this Id.
   final String _channelID = "qPYMUExYWUHJYET7qBUT";
 
+  //Cloud FireStore Instance to accessing storage bucket
+  static final _storage=FirebaseStorage.instance;
+  final _storageRef=_storage.ref().child("images");
   @override
   Future<void> signUp({String email, String password}) async => await _auth
       .createUserWithEmailAndPassword(email: email, password: password);
@@ -115,5 +121,16 @@ class FireRepository extends RapoBase {
             .map((docSnapshot) => TextMessage.fromEntity(
                 TextMessageEntity.fromSnapshot(docSnapshot)))
             .toList());
+  }
+
+  //FireStorage
+  //upload image
+  Future<void> uploadImages({File imageFile,Function onComplete(String path)})async{
+    final ref=_storage.ref().child("images/${DateTime.now().millisecondsSinceEpoch}.png");
+    ref.putFile(imageFile).onComplete.then((image)async{
+      final path=await ref.getDownloadURL();
+      print("imageFileTest ${path.toString()}");
+      onComplete(path);
+    });
   }
 }

@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_group_chat/app_constent.dart';
+import 'package:flutter_group_chat/model/text_message.dart';
 import 'package:flutter_group_chat/repository/firebase_repository.dart';
 import './bloc.dart';
 
@@ -21,6 +24,8 @@ class CommunicationBloc extends Bloc<CommunicationEvent, CommunicationState> {
       yield* _mapOfMessagesLoadToState();
     }else if (event is MessagesUpdated){
       yield* _mapOfMessagesUpdatedToState(event);
+    }else if (event is SendImageMessage){
+      yield* _mapOfSendImageMessageToState(event);
     }
   }
 
@@ -40,5 +45,23 @@ class CommunicationBloc extends Bloc<CommunicationEvent, CommunicationState> {
   Stream<CommunicationState> _mapOfMessagesUpdatedToState(MessagesUpdated event) async*{
     yield LoadedCommunication(messages: event.messages);
   }
+
+  Stream<CommunicationState> _mapOfSendImageMessageToState(SendImageMessage event) async*{
+    _repository.uploadImages(imageFile: event.file,onComplete: (path){
+      _repository.sendMessage(
+        message: TextMessage(
+          type: AppConst.image,
+          time: Timestamp.now(),
+          content: path,
+          senderName:event.senderName,
+          senderId: event.senderUid,
+          recipientId: "",
+          receiverName: "",
+        )
+      );
+      return;
+    });
+  }
+
 
 }

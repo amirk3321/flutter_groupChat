@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_group_chat/model/text_message.dart';
 
@@ -16,6 +18,15 @@ class SendTextMessage extends CommunicationEvent{
   @override
   // TODO: implement props
   List<Object> get props => [message];
+}
+class SendImageMessage extends CommunicationEvent{
+  final File file;
+  final String senderName;
+  final String senderUid;
+  SendImageMessage({this.file,this.senderName,this.senderUid});
+  @override
+  // TODO: implement props
+  List<Object> get props => [file];
 }
 class MessagesLoad extends CommunicationEvent{
   @override

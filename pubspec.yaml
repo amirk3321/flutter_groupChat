@@ -28,6 +28,8 @@ dependencies:
 
   #dateFormat
   intl: ^0.16.0
+  #image picker
+  image_picker: ^0.6.1+11
 
   #firebase
   cloud_firestore: ^0.12.10
